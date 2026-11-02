@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SKILL-VISION · Human Capital ROI Engine (APEX 5D™)
 
 A business-case calculator for human-capital programmes. It takes a client's Italian statutory income statement (art. 2425 c.c.) and the results of an APEX 5D competence assessment, then estimates the **first-year ROI** of the programme, which is the assessment plus the development actions that follow it.
@@ -82,3 +83,6 @@ See `CLAUDE.md` (project rules) and `PROGRESS.md` (status).
 ## Import format
 
 Two columns, key and value, in `.xlsx`, `.xls` or `.csv`. The CSV separator can be `;`, `,` or a tab. Keys are matched without regard to accents, case or punctuation. The full list appears on the "Dati" tab, and "Copia template" puts a ready-made template on the clipboard. Numbers can be in Italian format (`25.619.746`, `4,3`, `1.234,56`) or in unambiguous English format.
+=======
+# Skill-Vision-ROI
+>>>>>>> 334ca5dcba41f6b1f58115b94ccb85bbe81959f1
