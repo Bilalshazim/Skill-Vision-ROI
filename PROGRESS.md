@@ -58,3 +58,20 @@ Senza Web Animations API (es. jsdom nei test) il cambio di scheda è istantaneo.
 ### Test
 
 `npm test`: 69 test, tutti verdi (unit, parità con il file originale, dashboard, preset di animazione).
+
+## 2026-11-02 · Pubblicazione su GitHub Pages
+
+| Problema | Correzione |
+|---|---|
+| Il commit `aa2bee7` ha spostato `src/index.html` nella radice senza aggiornare i percorsi: `styles/main.css`, `assets/…` e `js/main.js` davano 404 (pagina vuota e senza stile; verificato sul sito pubblicato) | `index.html` carica `./src/styles/main.css`, `./src/assets/…` e `./src/js/main.js` |
+| `npm run build` e `npm test` non funzionavano più (il build leggeva `src/index.html`) | il build legge `index.html` nella radice |
+| `npm run dev` serviva `src/`, ora senza pagina | serve la radice; aggiunto `npm run preview:pages` (sottocartella `/Skill-Vision-ROI/`, file nascosti esclusi, come Pages) |
+| «Salva copia» dal sito pubblicato avrebbe prodotto un file vuoto (percorsi relativi a `./src/`) | nella copia i percorsi diventano indirizzi assoluti del sito (Pages invia `Access-Control-Allow-Origin: *`) |
+| `README.md` con marcatori di conflitto (`<<<<<<< HEAD`) committati | conflitto risolto |
+| Jekyll | aggiunto `.nojekyll` |
+| Cambio di scheda dipendente dalla fine dell'animazione: con fotogrammi sospesi il pannello non cambiava | timer di sicurezza che porta l'animazione alla fine (verificato a timeline ferma) |
+| Transizioni di colore su pulsanti e area di caricamento (instructions.md §2 ammette solo `transform` e `opacity`) | rimosse; un test controlla l'intero foglio di stile |
+
+Verifica in Chromium sotto `/Skill-Vision-ROI/`: 26 richieste locali tutte 200, stile, font, loghi e grafici caricati, nessun errore in console.
+
+`npm test`: 77 test, tutti verdi (nuovo `tests/integration/pages.test.js`).

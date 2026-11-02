@@ -46,7 +46,22 @@ export function currentHTML(){
   const doc=new DOMParser().parseFromString(store.pristine,'text/html');
   const data=doc.getElementById('sv-data');
   data.textContent=embedJson(store.S);
+  absolutizeAssets(doc);
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
+}
+
+/* Sul sito pubblicato (GitHub Pages) la pagina carica ./src/…: nella copia salvata quei percorsi
+   diventano indirizzi completi del sito, altrimenti aperta dal disco sarebbe una pagina vuota.
+   La versione compilata (dist/) è già autonoma e non ha percorsi relativi. */
+export function absolutizeAssets(doc, baseUrl){
+  const base=baseUrl||location.href;
+  if(!/^https?:/.test(base)) return;
+  doc.querySelectorAll('link[href],script[src],img[src]').forEach(function(el){
+    const attr=el.hasAttribute('href')? 'href' : 'src';
+    const v=el.getAttribute(attr);
+    if(!v || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(v)) return;   /* già assoluto, data: o ancora */
+    el.setAttribute(attr, new URL(v, base).href);
+  });
 }
 
 export function initSave(){

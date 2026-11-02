@@ -62,13 +62,25 @@ export function switchPanel(panels, to, onShown){
   const ex=FAST_PAGE_VARIANTS.exit, en=FAST_PAGE_VARIANTS.animate;
   const out=from.animate([frame(en), frame(ex)], {duration:ex.transition.duration*1000, easing:cubicBezier(ex.transition.ease), fill:'forwards'});
   running=[out];
+  guard(out, id);
   out.onfinish=function(){
     if(id!==token) return;
     show();
     out.cancel();   /* toglie lo stato finale dal pannello ormai nascosto */
     const inn=to.animate([frame(FAST_PAGE_VARIANTS.initial), frame(en)], {duration:en.transition.duration*1000, easing:cubicBezier(en.transition.ease)});
     running=[inn];
+    guard(inn, id);
     inn.onfinish=release;
     inn.oncancel=release;
   };
+}
+
+/* Se il browser sospende i fotogrammi (finestra coperta, webview limitate, anteprima di stampa)
+   l'animazione non avanza: il cambio di vista non deve dipenderne. Poco dopo la durata prevista
+   la si porta comunque alla fine, così il pannello giusto è sempre visibile e opaco. */
+function guard(anim, id){
+  const ms=anim.effect && anim.effect.getTiming? (+anim.effect.getTiming().duration||0) : 0;
+  setTimeout(function(){
+    if(id===token && anim.playState==='running') anim.finish();
+  }, ms+150);
 }

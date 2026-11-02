@@ -72,7 +72,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;backgroun
 .brand .s{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:560px){.brand .sep,.brand .tx{display:none}}
 .hdr-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-button,.btn{font:inherit;font-size:12.5px;font-weight:500;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:var(--r-sm);padding:7px 12px;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
+button,.btn{font:inherit;font-size:12.5px;font-weight:500;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:var(--r-sm);padding:7px 12px;cursor:pointer}
 button:hover{background:var(--surface-3)}
 button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.primary{background:var(--lime);border-color:var(--lime);color:var(--on-lime);font-weight:600}
@@ -174,7 +174,7 @@ svg{display:block;max-width:100%;height:auto;overflow:visible}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
 
-.drop{border:1.5px dashed var(--line-strong);border-radius:var(--r);padding:26px 20px;text-align:center;background:var(--surface-2);transition:border-color .2s,background .2s}
+.drop{border:1.5px dashed var(--line-strong);border-radius:var(--r);padding:26px 20px;text-align:center;background:var(--surface-2)}
 .drop.over{border-color:var(--accent);background:var(--accent-soft)}
 .drop p{font-size:13px;color:var(--ink-2)}
 #status{font-size:12.5px;min-height:18px}

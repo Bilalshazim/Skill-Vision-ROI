@@ -73,6 +73,9 @@ Lo stato aggiornato di ogni voce è in `PROGRESS.md`.
 
 ## 7. Note tecniche (progetto)
 
-* Sorgenti in `src/` (vedi `README.md`); `npm run build` produce `dist/index.html`, file unico autonomo.
+* La pagina è `index.html` nella radice del repository (punto d'ingresso di GitHub Pages) e carica `./src/styles/main.css`, `./src/assets/…` e `./src/js/main.js`. Tutti i percorsi restano relativi (`./src/…`), mai assoluti (`/src/…`), perché il sito è pubblicato sotto `/Skill-Vision-ROI/`. Sorgenti in `src/` (vedi `README.md`).
+* `npm run build` produce `dist/index.html`, file unico autonomo (non pubblicato, in `.gitignore`).
+* Prima di un push: `npm test` (include `tests/integration/pages.test.js`, che controlla percorsi, maiuscole/minuscole e file non committati) e, per una verifica visiva, `npm run preview:pages`.
+* Le animazioni seguono `instructions.md`: solo `transform` e `opacity`, preset in `src/js/core/motion.js`.
 * `npm test` deve restare verde. I test di parità (`tests/integration/parity.test.js`) confrontano i risultati con il file originale in `legacy/`: ogni modifica ai calcoli deve essere intenzionale e motivata.
 * La logica di calcolo sta in `src/js/core/` (funzioni pure, senza DOM).

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/serve.mjs src",
+    "dev": "node scripts/serve.mjs .",
+    "preview:pages": "node scripts/serve.mjs . 5173 Skill-Vision-ROI",
     "serve": "node scripts/serve.mjs dist",
     "test": "npm run build && node --test \"tests/**/*.test.js\"",
     "test:unit": "node --test \"tests/unit/*.test.js\"",

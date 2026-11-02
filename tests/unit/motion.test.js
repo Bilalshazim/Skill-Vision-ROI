@@ -24,6 +24,20 @@ test("an underdamped spring would overshoot (the simulation is real)", () => {
   assert.ok(Math.max(...s.points.slice(0, -1)) > 1);
 });
 
+test("stylesheet animates only transform and opacity (instructions.md §2, GPU-only)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const css = readFileSync(new URL("../../src/styles/main.css", import.meta.url), "utf8");
+  // drop (…) groups first, so commas inside var()/cubic-bezier() don't split a declaration
+  const flat = (s) => { let p; do { p = s; s = s.replace(/\([^()]*\)/g, ""); } while (s !== p); return s; };
+  const props = [...css.matchAll(/transition(?:-property)?\s*:\s*([^;}]+)/g)]
+    .flatMap((m) => flat(m[1]).split(","))
+    .map((p) => p.trim().split(/\s+/)[0])
+    .filter((p) => p && p !== "none");
+  assert.ok(props.length > 0);
+  for (const p of props) assert.ok(["transform", "opacity"].includes(p), `transition on "${p}"`);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\*\s*\{\s*animation-duration:\s*\.01ms!important;\s*transition-duration:\s*\.01ms!important/);
+});
+
 test("variant frames only use transform and opacity", () => {
   assert.deepEqual(frame(FAST_PAGE_VARIANTS.exit), { opacity: 0, transform: "translateY(-4px) scale(0.985)" });
   assert.deepEqual(Object.keys(frame(FAST_PAGE_VARIANTS.initial)).sort(), ["opacity", "transform"]);

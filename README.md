@@ -1,9 +1,10 @@
-<<<<<<< HEAD
-# SKILL-VISION · Human Capital ROI Engine (APEX 5D™)
+# Skill-Vision-ROI · Human Capital ROI Engine (APEX 5D™)
 
 A business-case calculator for human-capital programmes. It takes a client's Italian statutory income statement (art. 2425 c.c.) and the results of an APEX 5D competence assessment, then estimates the **first-year ROI** of the programme, which is the assessment plus the development actions that follow it.
 
 The interface is in Italian. Everything runs in the browser with no backend: client data never leaves the machine.
+
+**Live:** https://bilalshazim.github.io/Skill-Vision-ROI/
 
 ## What it calculates
 
@@ -26,12 +27,13 @@ Three scenarios are available (prudential, base, expansive). The page also inclu
 ## Project layout
 
 ```
+index.html               the page (GitHub Pages entry): loads ./src/styles, ./src/assets, ./src/js
+.nojekyll                serve files as-is on GitHub Pages (no Jekyll build)
 src/
-  index.html             page markup
-  styles/main.css        all styles (light/dark theme tokens)
+  styles/main.css        all styles (light/dark theme tokens, print/PDF rules)
   assets/                logos
   js/
-    main.js              entry point
+    main.js              entry point (ES module)
     core/                pure logic: no DOM, unit-tested
       defaults.js        sample/empty datasets, state migration
       anagrafica.js      partita IVA check digit, ATECO code format
@@ -43,31 +45,46 @@ src/
       zip.js             dependency-free .zip writer
       motion.js          animation presets (tab spring → CSS linear(), page variants)
     content/             glossary and bibliography texts
-    ui/                  rendering, charts (hand-drawn SVG), controls, import, save
+    ui/                  rendering, charts (hand-drawn SVG), controls, motion, import, save
 scripts/
-  build.mjs              bundles src/ → dist/index.html (one self-contained file)
-  serve.mjs              tiny static server
+  build.mjs              bundles index.html + src/ → dist/index.html (one self-contained file)
+  serve.mjs              tiny static server (optional base path, like GitHub Pages)
 tests/
   unit/                  core logic (node:test)
-  integration/           built page driven in jsdom, plus parity with the legacy file
+  integration/           page driven in jsdom, parity with the legacy file, GitHub Pages path checks
   fixtures/              sample CSV exports
 legacy/                  the original single-file dashboard (reference for parity tests)
 docs/test-report.md      test results and defects found
+CLAUDE.md                project rules · PROGRESS.md status · instructions.md animation standard
 ```
 
 ## Usage
 
 ```bash
 npm install
-npm run build      # → dist/index.html: double-click it, or email it zipped
-npm test           # build + all tests
-npm run dev        # serve src/ at http://127.0.0.1:5173 for development
-npm run serve      # serve dist/
+npm run dev            # serve the site at http://127.0.0.1:5173/
+npm run preview:pages  # same, under /Skill-Vision-ROI/ exactly like GitHub Pages
+npm test               # build + all tests
+npm run build          # → dist/index.html: single file, double-click it or email it zipped
+npm run serve          # serve dist/
 ```
 
-`dist/index.html` is a single file with the CSS, JS and logos inlined, so it works from disk like the original. Two features still need an internet connection: the SheetJS Excel reader and the Google fonts. CSV import works offline.
+The root `index.html` loads ES modules, so it needs to be served over HTTP (GitHub Pages or `npm run dev`). If you open it by double-clicking, the browser blocks the modules and the page stays empty. For a file that works from disk, use `dist/index.html`.
 
-**Salva copia** writes the current data into the `<script id="sv-data">` block of a copy of the page. That copy then opens on the client's data, and "Dati campione" in that copy restores the saved client. Use it from the built `dist/` file. A copy saved while running `npm run dev` would reference the separate source files.
+## Deploying to GitHub Pages
+
+Settings → Pages → *Deploy from a branch* → `main` / `/ (root)`. No build step is needed: Pages serves `index.html` and `src/` as they are in the repository. Every path is relative (`./src/…`), so the site also works under the `/Skill-Vision-ROI/` project path. `tests/integration/pages.test.js` checks the following:
+- every file the page loads exists, with exactly matching letter case (Pages is case-sensitive, Windows is not)
+- every such file is committed to git
+- no path is root-absolute
+
+**Salva copia** writes the current data into the `<script id="sv-data">` block of a copy of the page.
+- **From the hosted site:** the copy links to the site's absolute URLs, so it opens anywhere with an internet connection.
+- **From `dist/`:** the copy is fully self-contained and also works offline.
+
+In both cases the copy opens on the client's data, and "Dati campione" in it restores that client.
+
+Two features always need an internet connection: the SheetJS Excel reader and the Google fonts. CSV import works offline.
 
 ## Print / PDF
 
@@ -83,6 +100,3 @@ See `CLAUDE.md` (project rules) and `PROGRESS.md` (status).
 ## Import format
 
 Two columns, key and value, in `.xlsx`, `.xls` or `.csv`. The CSV separator can be `;`, `,` or a tab. Keys are matched without regard to accents, case or punctuation. The full list appears on the "Dati" tab, and "Copia template" puts a ready-made template on the clipboard. Numbers can be in Italian format (`25.619.746`, `4,3`, `1.234,56`) or in unambiguous English format.
-=======
-# Skill-Vision-ROI
->>>>>>> 334ca5dcba41f6b1f58115b94ccb85bbe81959f1
