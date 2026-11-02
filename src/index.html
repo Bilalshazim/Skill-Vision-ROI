@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Human Capital ROI Engine</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="styles/main.css">
+<!-- Client data embedded by «Salva copia». Empty = start from the sample dataset. -->
+<script type="application/json" id="sv-data"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="topin">
+    <div class="brand">
+      <img class="logo l" alt="SKILL-VISION" src="assets/logo-light.png">
+      <img class="logo d" alt="SKILL-VISION" src="assets/logo-dark.png">
+      <span class="sep" aria-hidden="true"></span>
+      <span class="tx">
+        <span class="t" id="brandTitle">Human Capital ROI Engine</span>
+        <span class="s" id="brandSub">APEX 5D™</span>
+      </span>
+    </div>
+    <!-- icone Lucide (ISC), inline -->
+    <div class="hdr-actions" role="toolbar" aria-label="Azioni">
+      <button id="themeBtn" type="button" class="ib" aria-label="Cambia tema" title="Tema"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button id="clearBtn" type="button" class="ib" aria-label="Azzera tutto" title="Azzera tutto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+      <button id="resetBtn" type="button" class="ib" aria-label="Dati campione" title="Dati campione"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></button>
+      <button id="glossBtn" type="button" class="ib" aria-label="Glossario" title="Glossario"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+      <button id="printBtn" type="button" class="ib primary" aria-label="Stampa o salva in PDF" title="Stampa / PDF"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg></button>
+      <button id="updBtnTop" type="button" class="ib upd" aria-label="Aggiorna il dato dal file" title="Aggiorna il dato"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>
+    </div>
+  </div>
+  <div class="wrap" style="padding-block:0">
+    <!-- barra di stato del business case: cliente, esercizio e KPI principali -->
+    <div class="statusbar" id="statusBar" role="status" aria-label="Stato del business case">
+      <div class="sb-meta"><strong id="sbCompany">Nessun cliente</strong><span id="sbMeta"></span></div>
+      <dl class="sb-kpi">
+        <div class="roi"><dt>ROI</dt><dd id="sbRoi">—</dd></div>
+        <div><dt>Beneficio anno 1</dt><dd id="sbBen">—</dd></div>
+        <div><dt>Rientro</dt><dd id="sbPb">—</dd></div>
+        <div><dt>Pareggio</dt><dd id="sbBe">—</dd></div>
+      </dl>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="sintesi">Sintesi</button>
+      <button role="tab" aria-selected="false" data-tab="dati">Dati</button>
+      <button role="tab" aria-selected="false" data-tab="motore">Motore di calcolo</button>
+      <button role="tab" aria-selected="false" data-tab="scenari">Scenari</button>
+      <button role="tab" aria-selected="false" data-tab="metodo">Metodologia</button>
+      <button role="tab" aria-selected="false" data-tab="vpnm">Valore non monetizzato</button>
+      <button role="tab" aria-selected="false" data-tab="glossario">Glossario</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ SINTESI ============ -->
+<section class="panel" id="p-sintesi">
+<div class="p1">
+  <div class="p1-blk" style="margin-bottom:18px">
+    <span class="eyebrow">Business case · <span id="scenEyebrow">scenario base</span></span>
+    <h1 style="font-size:24px;margin:6px 0 8px" id="h1Title">Ritorno economico stimato del programma sul capitale umano</h1>
+    <p class="lead" id="leadTxt"></p>
+  </div>
+
+  <div class="note bad" id="blockNote" hidden style="margin-bottom:16px"></div>
+
+  <div class="p1-blk">
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="kpi hero">
+      <span class="lab">ROI incrementale stimato · primo anno<button class="i" data-info="roi" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-roi">—</span>
+      <span class="sub" id="k-roi-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Beneficio atteso anno 1<button class="i" data-info="benefit" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-ben">—</span>
+      <span class="sub" id="k-ben-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Tempo di rientro<button class="i" data-info="payback" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-pb">—</span>
+      <span class="sub" id="k-pb-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Soglia di pareggio sul potenziale<button class="i" data-info="breakeven" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-be">—</span>
+      <span class="sub" id="k-be-sub">—</span>
+    </div>
+  </div>
+
+  <div class="grid g4" id="kpiRow2" style="margin-bottom:14px">
+    <div class="kpi">
+      <span class="lab">Benefici di costo<span class="tier ver">verificabili</span><button class="i" data-info="costBen" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-cost">—</span>
+      <span class="sub" id="k-cost-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Potenziale di produttività<span class="tier est">stima</span><button class="i" data-info="prodBen" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-prod">—</span>
+      <span class="sub" id="k-prod-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Potenziale economico del divario<button class="i" data-info="gapval" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-gap">—</span>
+      <span class="sub" id="k-gap-sub">—</span>
+    </div>
+    <div class="kpi">
+      <span class="lab">Investimento del programma<button class="i" data-info="invTot" type="button" aria-expanded="false">i</button></span>
+      <span class="val" id="k-inv">—</span>
+      <span class="sub" id="k-inv-sub">—</span>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="p1-blk">
+  <div class="sec-h"><h2>Dal dato al risultato<button class="i" data-info="chain" type="button" aria-expanded="false">i</button></h2><span class="hint">quattro livelli, ciascuno con un grado di certezza diverso</span></div>
+  <div class="chain" id="chain"></div>
+
+  <div class="note" id="cfoLine" style="margin:18px 0 22px"></div>
+  </div>
+
+  <div class="p1-blk">
+  <div class="grid g2">
+    <div class="chartbox">
+      <h3>Dal potenziale al beneficio netto<button class="i" data-info="chWaterfall" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap" id="wfCap">Le leve agiscono su basi economiche distinte; la produttività è una stima, le altre sono benefici di costo.</p>
+      <div id="waterfall"></div>
+    </div>
+    <div class="chartbox">
+      <h3>Il ritorno confrontato con il rendimento del capitale investito<button class="i" data-info="chHurdle" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap">Il ROCE è il rendimento che l'azienda ottiene oggi da ogni euro di capitale impiegato: è la soglia da battere.</p>
+      <div id="hurdle"></div>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="p1-blk">
+  <div class="sec-h"><h2>Solidità del business case</h2><span class="hint">controlli automatici e stato delle ipotesi</span></div>
+  <div class="grid g2 solid">
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:12px">Controlli sui dati<button class="i" data-info="checks" type="button" aria-expanded="false">i</button></h3>
+      <ul class="checks" id="checksList"></ul>
+    </div>
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:12px">Ipotesi del modello<button class="i" data-info="calib" type="button" aria-expanded="false">i</button></h3>
+      <div id="calibBox"></div>
+    </div>
+  </div>
+
+  </div>
+</div>
+  <!-- in stampa: secondo riga KPI e frase CFO aprono la pagina 2 (spostati da preparePrint) -->
+  <div class="p1-rest" id="p1Rest"></div>
+
+  <div class="sec-h"><h2>Gli indicatori dell'assessment</h2><span class="hint">tre misure distinte, nessuna sommabile alle altre</span></div>
+  <div class="grid g3">
+    <div class="chartbox">
+      <h3>Valore competenze<button class="i" data-info="comp" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap">Livello rilevato contro livello atteso medio</p>
+      <div id="bulletComp"></div>
+    </div>
+    <div class="chartbox">
+      <h3>Copertura ruoli<button class="i" data-info="cov" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap">Quota di ruoli presidiati al livello richiesto</p>
+      <div id="bulletCov"></div>
+    </div>
+    <div class="chartbox">
+      <h3>Indicatori di rischio<button class="i" data-info="chRisk" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap">Turnover e assenze, valori lordi prima delle ipotesi</p>
+      <div id="riskMini"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DATI ============ -->
+<section class="panel" id="p-dati" hidden>
+  <span class="eyebrow">Passo 1</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Dati di input</h2>
+  <p class="lead no-print">Carica il bilancio e i risultati dell'assessment, oppure modifica i campi a mano. Ogni voce derivata si ricalcola in tempo reale e il motore aggiorna tutta la dashboard.</p>
+
+  <div class="no-print">
+  <div class="sec-h"><h2>Caricamento dati</h2><span class="hint">Excel (.xlsx) o CSV</span></div>
+  <div class="srclegend" id="srcLegend">
+    <span><b>Origine dei dati:</b></span>
+    <span><i class="sw e"></i><b>Verde</b> · arriva dall'Excel del cliente (bilancio e anagrafica)</span>
+    <span><i class="sw m"></i><b>Ambra</b> · da compilare noi, fuori dall'Excel (assessment, HR e ipotesi del modello)</span>
+    <span><i class="sw c"></i><b>Grigio</b> · calcolato dal motore, non si tocca</span>
+  </div>
+  <div class="card pad">
+    <div class="drop" id="drop">
+      <p style="font-weight:600;color:var(--ink);margin-bottom:6px">Trascina qui il file, oppure</p>
+      <p style="margin-bottom:12px">seleziona un .xlsx / .csv con due colonne: <span class="num">chiave</span> e <span class="num">valore</span></p>
+      <input type="file" id="file" accept=".xlsx,.xls,.csv" style="display:none">
+      <input type="file" id="jfile" accept=".json" style="display:none">
+      <button type="button" id="pickBtn">Scegli file</button>
+      <button type="button" class="upd" id="updBtn">AGGIORNA IL DATO</button>
+      <button type="button" id="tplBtn">Copia template</button>
+      <button type="button" id="jsonBtn">Carica dati (.json)</button>
+      <button type="button" id="clearBtn2">Azzera tutto</button>
+      <p id="status" style="margin-top:12px"></p>
+      <div id="changes"></div>
+      <div id="missing"></div>
+    </div>
+    <div style="margin-top:14px">
+      <details>
+        <summary>Chiavi riconosciute dal parser</summary>
+        <div class="dbody">
+          <p>Il file può avere le chiavi su una colonna e i valori sull'altra, in qualsiasi ordine, con o senza riga di intestazione. Il parser normalizza accenti, maiuscole e separatori, e riconosce sia il punto sia la virgola come separatore decimale. Chiavi accettate:</p>
+          <div class="formula" style="white-space:pre-wrap;line-height:1.7" id="keyList"></div>
+          <p>Un file esportato dal gestionale con le righe di conto economico standard viene riconosciuto anche se contiene molte righe in più: le chiavi non riconosciute vengono ignorate.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="sec-h"><h2>Salva e condividi</h2><span class="hint">una copia per ogni cliente</span></div>
+  <div class="card pad">
+    <div class="grid g2" style="gap:18px;align-items:start">
+      <div>
+        <h3 style="font-size:13.5px;margin-bottom:8px">Salvare il lavoro</h3>
+        <p class="derived" style="font-size:12.8px;line-height:1.55;margin-bottom:12px">«Salva copia» scarica una dashboard autonoma con dentro i dati attualmente caricati, nominata con la ragione sociale e l'esercizio. È il file da conservare nella cartella del cliente e da riaprire quando serve. «Salva dati» esporta solo i numeri in un file leggero, da ricaricare qui sopra.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="primary" id="saveHtml">Salva copia (.html)</button>
+          <button type="button" id="saveZip">Salva per email (.zip)</button>
+          <button type="button" id="saveJson">Salva dati (.json)</button>
+        </div>
+        <p id="saveStatus" style="font-size:12.5px;margin-top:10px;min-height:18px"></p>
+      </div>
+      <div>
+        <h3 style="font-size:13.5px;margin-bottom:8px">Inviarla per email</h3>
+        <p class="derived" style="font-size:12.8px;line-height:1.55;margin-bottom:10px">Quasi tutti i servizi di posta — Gmail, Outlook, Exchange aziendali — bloccano o rimuovono gli allegati con estensione <span class="num">.html</span>, perché sono un vettore classico di phishing. Non è un difetto di questa dashboard: succede con qualsiasi file HTML.</p>
+        <ul class="clean" style="font-size:12.8px;margin-bottom:0">
+          <li><strong>Allega lo .zip</strong> — il pulsante qui accanto produce un archivio che supera i filtri nella grande maggioranza dei casi.</li>
+          <li><strong>Manda il PDF</strong> — «Stampa / PDF» genera un documento statico, adatto a chi deve solo leggere.</li>
+          <li><strong>Pubblica il file</strong> su skill-vision.it e manda il collegamento: è la via migliore per la distribuzione ai clienti, perché resta interattiva.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="derived" style="font-size:12.5px;line-height:1.55;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)"><strong style="color:var(--ink)">Riservatezza.</strong> Il file salvato contiene dati di bilancio e indicatori medi dell'assessment: nessun risultato individuale. Resta comunque un documento riservato del cliente — da inviare in archivio protetto da password o su canale sicuro, e da conservare nella cartella riservata. Se in futuro vi si inserissero risultati individuali, diventerebbe un documento con dati personali soggetto al GDPR e andrebbe trattato come tale.</p>
+    <div class="note warn" id="iframeNote" hidden style="margin-top:16px"></div>
+  </div>
+
+  </div>
+
+  <div class="sec-h"><h2>Anagrafica e assessment</h2><span class="hint">risultati APEX 5D e dati HR</span></div>
+  <div class="card pad grid g4">
+    <div class="field"><label for="i_company">Azienda</label><input type="text" id="i_company" data-str="company"></div>
+    <div class="field"><label for="i_piva">Partita IVA<span class="u">11 cifre</span></label><input type="text" id="i_piva" data-str="piva" inputmode="numeric" maxlength="13" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="i_settore">Settore<span class="u">descrizione</span></label><input type="text" id="i_settore" data-str="settore"></div>
+    <div class="field"><label for="i_ateco">Codice ATECO<span class="u">nn.nn.nn</span></label><input type="text" id="i_ateco" data-str="ateco" placeholder="es. 28.29.30" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="i_anno">Esercizio<span class="u">anno</span></label><input type="number" id="i_anno" data-str="anno"></div>
+    <div class="field"><label for="i_N">Dipendenti<span class="u">FTE</span></label><input type="number" id="i_N" data-k="N"></div>
+    <div class="field"><label for="i_nVal">Persone valutate<span class="u">n.</span></label><input type="number" id="i_nVal" data-k="nVal"></div>
+    <div class="field"><label for="i_inv">Corrispettivo assessment<span class="u">€</span></label><input type="number" id="i_inv" data-k="inv"></div>
+    <div class="field"><label for="i_invAz">Costo azioni di sviluppo<span class="u">€</span></label><input type="number" id="i_invAz" data-k="invAz"></div>
+    <div class="field"><label for="i_comp">Valore competenze<span class="u">punti/100</span></label><input type="number" id="i_comp" data-k="comp" step="0.1"></div>
+    <div class="field"><label for="i_gap">GAP medio vs valore atteso<span class="u">p.p./100</span></label><input type="number" id="i_gap" data-k="gap" step="0.1"></div>
+    <div class="field"><label>Valore atteso medio implicito<button class="i" data-info="atteso" type="button" aria-expanded="false">i</button><span class="u">punti</span></label><input type="text" id="o_atteso" readonly></div>
+    <div class="field"><label for="i_cov">Copertura ruoli<span class="u">%</span></label><input type="number" id="i_cov" data-k="cov" step="0.1"></div>
+    <div class="field"><label for="i_posPrev">Posizioni in organigramma<span class="u">n.</span></label><input type="number" id="i_posPrev" data-k="posPrev"></div>
+    <div class="field"><label>Posizioni non presidiate<button class="i" data-info="scop" type="button" aria-expanded="false">i</button><span class="u">ruoli</span></label><input type="text" id="o_scop" readonly></div>
+    <div class="field"><label for="i_turn">Turnover<span class="u">% annuo</span></label><input type="number" id="i_turn" data-k="turn" step="0.1"></div>
+    <div class="field"><label>Uscite attese<button class="i" data-info="usc" type="button" aria-expanded="false">i</button><span class="u">persone/anno</span></label><input type="text" id="o_usc" readonly></div>
+    <div class="field"><label for="i_ass">Assenteismo + malattia<span class="u">% ore</span></label><input type="number" id="i_ass" data-k="ass" step="0.1"></div>
+    <div class="field"><label>Popolazione coperta<button class="i" data-info="popF" type="button" aria-expanded="false">i</button><span class="u">%</span></label><input type="text" id="o_pop" readonly></div>
+  </div>
+
+  <div class="sec-h"><h2>Conto economico</h2><span class="hint">schema civilistico, art. 2425 c.c.</span></div>
+  <div class="card pad grid g4">
+    <div class="field"><label for="i_ric">Ricavi operativi<span class="u">A1 · €</span></label><input type="number" id="i_ric" data-k="ric"></div>
+    <div class="field"><label for="i_vdp">Valore della produzione<span class="u">A · €</span></label><input type="number" id="i_vdp" data-k="vdp"></div>
+    <div class="field"><label for="i_costiProd">Totale costi della produzione<span class="u">B · €</span></label><input type="number" id="i_costiProd" data-k="costiProd"></div>
+    <div class="field"><label for="i_cp">Costo del personale<span class="u">B9 · €</span></label><input type="number" id="i_cp" data-k="cp"></div>
+    <div class="field"><label for="i_sal">Salari e stipendi<span class="u">B9a · €</span></label><input type="number" id="i_sal" data-k="sal"></div>
+    <div class="field"><label for="i_amm">Ammortamenti e svalutazioni<span class="u">B10 · €</span></label><input type="number" id="i_amm" data-k="amm"></div>
+    <div class="field"><label for="i_acc">Accantonamenti<span class="u">B12+B13 · €</span></label><input type="number" id="i_acc" data-k="acc"></div>
+    <div class="field"><label for="i_serv">Costo per servizi<span class="u">B7 · €</span></label><input type="number" id="i_serv" data-k="serv"></div>
+    <div class="field"><label for="i_ebit">EBIT dichiarato nel file<span class="u">€</span></label><input type="number" id="i_ebit" data-k="ebit"></div>
+    <div class="field"><label for="i_ebitda">EBITDA dichiarato nel file<span class="u">€</span></label><input type="number" id="i_ebitda" data-k="ebitda"></div>
+    <div class="field"><label for="i_ante">Risultato ante imposte<span class="u">€</span></label><input type="number" id="i_ante" data-k="ante"></div>
+    <div class="field"><label for="i_imp">Imposte sul reddito<span class="u">20 · €</span></label><input type="number" id="i_imp" data-k="imposte"></div>
+    <div class="field"><label for="i_un">Utile netto<span class="u">21 · €</span></label><input type="number" id="i_un" data-k="un"></div>
+  </div>
+
+  <div class="sec-h"><h2>Convenzioni contabili</h2><span class="hint">il motore ricalcola EBIT ed EBITDA dalle voci, non li prende per buoni</span></div>
+  <div class="card pad">
+    <div class="grid g4" style="align-items:end">
+      <div class="field" style="grid-column:span 2">
+        <label for="i_conv">Definizione di EBITDA adottata<button class="i" data-info="conv" type="button" aria-expanded="false">i</button></label>
+        <select id="i_conv">
+          <option value="gest">Gestionale · A − B + ammortamenti + accantonamenti</option>
+          <option value="prud">Prudente · A − B + ammortamenti (accantonamenti come costi)</option>
+        </select>
+      </div>
+      <div class="field"><label>EBIT ricalcolato<button class="i" data-info="ebitCalc" type="button" aria-expanded="false">i</button><span class="u">A − B</span></label><input type="text" id="o_ebit" readonly></div>
+      <div class="field"><label>EBITDA ricalcolato<button class="i" data-info="ebitdaCalc" type="button" aria-expanded="false">i</button><span class="u">€</span></label><input type="text" id="o_ebitda" readonly></div>
+    </div>
+    <div class="note" id="coerenza" style="margin-top:14px"></div>
+  </div>
+
+  <div class="sec-h"><h2>Indici di redditività</h2><span class="hint">termine di confronto, non entrano nel calcolo del beneficio</span></div>
+  <div class="card pad grid g4">
+    <div class="field"><label for="i_roce">ROCE<span class="u">EBIT ÷ (attivo − pass. corr.)</span></label><input type="number" id="i_roce" data-k="roce" step="0.01"></div>
+    <div class="field"><label for="i_roi_az">ROI aziendale<span class="u">EBIT ÷ attivo</span></label><input type="number" id="i_roi_az" data-k="roiAz" step="0.01"></div>
+    <div class="field"><label for="i_ros">ROS<span class="u">EBIT ÷ A</span></label><input type="number" id="i_ros" data-k="ros" step="0.01"></div>
+    <div class="field"><label for="i_crescita">Crescita valore produzione<span class="u">%</span></label><input type="number" id="i_crescita" data-k="crescita" step="0.01"></div>
+  </div>
+
+  <div class="sec-h"><h2>Grandezze derivate</h2><span class="hint">calcolate dal bilancio, non inserite</span></div>
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Grandezza</th><th>Formula</th><th>Valore</th><th>Per dipendente</th></tr></thead>
+      <tbody id="derivedTbl"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ MOTORE ============ -->
+<section class="panel" id="p-motore" hidden>
+  <span class="eyebrow">Passo 2</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Motore di calcolo</h2>
+  <p class="lead">Quattro leve su basi economiche distinte, divise per grado di certezza. I benefici di costo — turnover e assenze — si verificano a consuntivo sui dati HR. Il potenziale di produttività è una stima che poggia su due ipotesi dichiarate. Ogni ipotesi resta segnalata come non calibrata finché non viene sostituita con un dato dell'azienda.</p>
+
+  <div class="sec-h"><h2>Scenario attivo</h2><span class="hint">cambia solo le ipotesi di effetto, mai le basi di bilancio</span></div>
+  <div class="card pad">
+    <div class="seg" role="group" aria-label="Scenario" id="segScen">
+      <button type="button" data-scen="prud" aria-pressed="false">Prudenziale</button>
+      <button type="button" data-scen="base" aria-pressed="true">Base</button>
+      <button type="button" data-scen="espa" aria-pressed="false">Espansivo</button>
+      <button type="button" class="cust" data-scen="cust" aria-pressed="false" tabindex="-1">Personalizzato</button>
+    </div>
+    <p class="derived" id="scenDesc" style="font-size:12.5px;line-height:1.5;margin-top:12px"></p>
+  </div>
+
+  <div class="sec-h"><h2>Base economica del capitale umano</h2><span class="hint">la scelta più delicata del modello</span></div>
+  <div class="card pad">
+    <div class="grid g2" style="align-items:end">
+      <div class="field">
+        <label for="i_base">Grandezza usata come base del divario<button class="i" data-info="baseSel" type="button" aria-expanded="false">i</button></label>
+        <select id="i_base">
+          <option value="hcva">HCVA · valore aggiunto del capitale umano (consigliata)</option>
+          <option value="va">Valore aggiunto</option>
+          <option value="ebitda">EBITDA</option>
+          <option value="cp">Costo del personale</option>
+        </select>
+      </div>
+      <p class="derived" id="baseExpl"></p>
+    </div>
+    <div style="margin-top:16px"><div id="baseCmp"></div></div>
+  </div>
+
+  <div class="sec-h"><h2>Potenziale di produttività<span class="tier est">stima</span></h2><span class="hint">relazione economica ipotizzata, da calibrare</span></div>
+  <div class="lever">
+    <div class="lever-h"><span class="sw" style="background:var(--c1)"></span><h3>Leva 1 · Produttività dal divario di competenza</h3><button class="i" data-info="lever1" type="button" aria-expanded="false">i</button><span class="amt" id="l1amt">—</span></div>
+    <div class="lever-b">
+      <div class="formula" id="l1f"></div>
+      <div class="grid g2" style="gap:18px">
+        <div class="field">
+          <label for="s_el">Elasticità del valore prodotto al divario<button class="i" data-info="el" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_elv"></span>%</span></label>
+          <input type="range" id="s_el" min="10" max="100" step="5">
+          <label class="cal"><input type="checkbox" id="c_el" data-cal="el"> calibrato con dato aziendale</label>
+        </div>
+        <div class="field">
+          <label for="s_r1">Quota del divario colmata in 12 mesi<button class="i" data-info="r1" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_r1v"></span>%</span></label>
+          <input type="range" id="s_r1" min="10" max="100" step="5">
+          <label class="cal"><input type="checkbox" id="c_r1" data-cal="r1"> calibrato con dato aziendale</label>
+        </div>
+      </div>
+      <p class="derived" style="font-size:12.5px;line-height:1.55">Due ipotesi distinte, che nella versione precedente erano fuse in un solo cursore. L'<strong style="color:var(--ink)">elasticità</strong> dice quanta parte di un punto di competenza recuperato diventa valore prodotto: un divario di 10 punti non dimostra da solo una perdita del 10%. L'<strong style="color:var(--ink)">attuabilità</strong> dice quanta parte del divario il piano di sviluppo riesce a colmare entro l'esercizio. Nessuna delle due deriva dalla letteratura: sono ipotesi di scenario, da sostituire con la correlazione fra punteggi APEX 5D e indicatori individuali di risultato quando disponibile.</p>
+    </div>
+  </div>
+
+  <div class="sec-h"><h2>Benefici di costo<span class="tier ver">verificabili</span></h2><span class="hint">misurabili a consuntivo su libro unico e cedolini</span></div>
+  <div class="grid" style="gap:14px">
+    <div class="lever">
+      <div class="lever-h"><span class="sw" style="background:var(--c2)"></span><h3>Leva 2 · Costo del turnover evitato</h3><button class="i" data-info="lever2" type="button" aria-expanded="false">i</button><span class="amt" id="l2amt">—</span></div>
+      <div class="lever-b">
+        <div class="formula" id="l2f"></div>
+        <div class="grid g2" style="gap:18px">
+          <div class="field">
+            <label for="s_cs">Costo di sostituzione<button class="i" data-info="cs" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_csv"></span>% RAL</span></label>
+            <input type="range" id="s_cs" min="20" max="200" step="5">
+            <label class="cal"><input type="checkbox" id="c_cs" data-cal="cs"> calibrato con dato aziendale</label>
+          </div>
+          <div class="field">
+            <label for="s_r2">Riduzione relativa del turnover<button class="i" data-info="r2" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_r2v"></span>%</span></label>
+            <input type="range" id="s_r2" min="0" max="50" step="1">
+            <label class="cal"><input type="checkbox" id="c_r2" data-cal="r2"> calibrato con dato aziendale</label>
+          </div>
+        </div>
+        <p class="derived" style="font-size:12.5px;line-height:1.55">La riduzione è <strong style="color:var(--ink)">relativa</strong>, non in punti: il 20% di un turnover del 5% porta il tasso al 4%. Per la verifica a consuntivo vanno usate le uscite effettive del libro unico, distinguendo volontarie e involontarie.</p>
+      </div>
+    </div>
+
+    <div class="lever">
+      <div class="lever-h"><span class="sw" style="background:var(--c3)"></span><h3>Leva 3 · Assenteismo comprimibile</h3><button class="i" data-info="lever3" type="button" aria-expanded="false">i</button><span class="amt" id="l3amt">—</span></div>
+      <div class="lever-b">
+        <div class="formula" id="l3f"></div>
+        <div class="grid g2" style="gap:18px">
+          <div class="field">
+            <label for="s_qa">Quota del costo a carico azienda<button class="i" data-info="qa" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_qav"></span>%</span></label>
+            <input type="range" id="s_qa" min="30" max="100" step="5">
+            <label class="cal"><input type="checkbox" id="c_qa" data-cal="qa"> calibrato con dato aziendale</label>
+          </div>
+          <div class="field">
+            <label for="s_r3">Riduzione relativa delle assenze<button class="i" data-info="r3" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_r3v"></span>%</span></label>
+            <input type="range" id="s_r3" min="0" max="40" step="1">
+            <label class="cal"><input type="checkbox" id="c_r3" data-cal="r3"> calibrato con dato aziendale</label>
+          </div>
+        </div>
+        <p class="derived" style="font-size:12.5px;line-height:1.55">La quota a carico azienda non è un parametro universale: dipende da qualifica, settore e contratto collettivo. Per gli impiegati dell'industria e i quadri la malattia è interamente a carico del datore; per gli operai l'INPS indennizza parte delle giornate dal quarto giorno e il CCNL spesso integra. Il valore va preso dai cedolini e dai conguagli dell'azienda.</p>
+      </div>
+    </div>
+
+    <div class="lever" id="lever4">
+      <div class="lever-h"><span class="sw" style="background:var(--line-strong)"></span><h3>Leva 4 · Posizioni vacanti <span class="pill neutral" style="margin-left:6px">opzionale</span></h3><button class="i" data-info="lever4" type="button" aria-expanded="false">i</button><span class="amt" id="l4amt">—</span></div>
+      <div class="lever-b">
+        <p class="derived" style="font-size:12.5px;line-height:1.55">Disattivata di default. Si basa solo sulle posizioni <strong style="color:var(--ink)">vacanti</strong> — previste in organigramma e prive di titolare — non sulla copertura ruoli: una posizione presidiata da una persona sotto soglia è già nel potenziale di produttività, e contarla qui la conterebbe due volte.</p>
+        <div class="grid g4" style="gap:16px;align-items:end">
+          <div class="field"><label for="s_l4on">Stato</label><select id="s_l4on"><option value="0">Disattivata</option><option value="1">Attiva</option></select></div>
+          <div class="field"><label for="i_posVac">Posizioni vacanti<span class="u">n.</span></label><input type="number" id="i_posVac" data-k="posVac" step="1"></div>
+          <div class="field"><label for="s_gg">Giorni medi di vacanza<button class="i" data-info="gg" type="button" aria-expanded="false">i</button> <span class="u">gg/anno</span></label><input type="number" id="s_gg" step="1"></div>
+          <div class="field"><label for="s_r4">Riduzione dei giorni<button class="i" data-info="r4" type="button" aria-expanded="false">i</button> <span class="u"><span id="s_r4v"></span>%</span></label><input type="range" id="s_r4" min="0" max="50" step="1"></div>
+        </div>
+        <div class="grid g4" style="gap:16px">
+          <div class="field"><label>Margine giornaliero per posizione<button class="i" data-info="mgg" type="button" aria-expanded="false">i</button> <span class="u">€/gg</span></label><input type="text" id="o_mgg" readonly></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-h"><h2>Riepilogo del calcolo</h2><span class="hint">scenario attivo</span></div>
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Leva</th><th>Livello</th><th>Base economica</th><th>Indicatore</th><th>Valore lordo</th><th>Quota attesa</th><th>Beneficio anno 1</th></tr></thead>
+      <tbody id="leverTbl"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SCENARI ============ -->
+<section class="panel" id="p-scenari" hidden>
+  <span class="eyebrow">Passo 3</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Scenari e sensibilità</h2>
+  <p class="lead">Tre livelli di prudenza sulla stessa struttura di calcolo. Cambiano solo le ipotesi di effetto — elasticità, attuabilità, riduzione di turnover e assenze. Le basi di bilancio e i parametri di costo calibrati sull'azienda restano identici in tutti e tre.</p>
+
+  <div class="grid g3" style="margin:18px 0 22px" id="scenCards"></div>
+
+  <div class="tscroll" style="margin-bottom:22px">
+    <table>
+      <thead><tr><th>Scenario</th><th>Produttività<button class="i" data-info="lever1" type="button" aria-expanded="false">i</button></th><th>Turnover<button class="i" data-info="lever2" type="button" aria-expanded="false">i</button></th><th>Assenze<button class="i" data-info="lever3" type="button" aria-expanded="false">i</button></th><th>Vacanze<button class="i" data-info="lever4" type="button" aria-expanded="false">i</button></th><th>Beneficio</th><th>Investimento</th><th>Netto</th><th>ROI</th><th>ROI solo costi<button class="i" data-info="roiCost" type="button" aria-expanded="false">i</button></th><th>Rientro</th></tr></thead>
+      <tbody id="scenTbl"></tbody>
+    </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="chartbox">
+      <h3>Beneficio netto per scenario<button class="i" data-info="chScen" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap">Beneficio del primo anno al netto dell'investimento del programma</p>
+      <div id="scenChart"></div>
+    </div>
+    <div class="chartbox">
+      <h3>Sensibilità al divario rilevato<button class="i" data-info="chSens" type="button" aria-expanded="false">i</button></h3>
+      <p class="cap" id="sensCap">Come cambia il ROI se il divario misurato fosse diverso</p>
+      <div id="sensChart"></div>
+    </div>
+  </div>
+
+  <div class="sec-h"><h2>Punto di pareggio</h2></div>
+  <div class="card pad">
+    <div id="beChart"></div>
+    <div class="note good" style="margin-top:16px" id="beNote"></div>
+  </div>
+
+  <div class="sec-h"><h2>Piano di verifica a 12 mesi<button class="i" data-info="verify" type="button" aria-expanded="false">i</button></h2><span class="hint">il beneficio realizzato non si stima: si misura</span></div>
+  <p class="lead" style="margin-bottom:14px">La tabella fissa oggi la baseline e il valore che lo scenario attivo implica per ciascun indicatore. A dodici mesi il confronto si fa sugli stessi indicatori e sulle stesse fonti: è questo il quarto livello della catena, il beneficio realizzato.</p>
+  <div class="tscroll wrapcell">
+    <table>
+      <thead><tr><th>Indicatore</th><th>Baseline</th><th>Valore implicito nello scenario</th><th>Fonte e metodo di misura</th></tr></thead>
+      <tbody id="verifyTbl"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ METODOLOGIA ============ -->
+<section class="panel" id="p-metodo" hidden>
+  <span class="eyebrow">Come è costruito</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Metodologia</h2>
+  <p class="lead">Tre principi. Ogni euro parte da una voce di bilancio verificabile. Formule contabili, ipotesi gestionali e risultati verificati restano separati e riconoscibili. Ogni ipotesi è dichiarata, modificabile e segnalata finché non viene calibrata sui dati dell'azienda.</p>
+
+  <div class="sec-h"><h2>La catena logica</h2><span class="hint">dal dato certo al risultato misurato</span></div>
+  <div class="tscroll wrapcell">
+    <table>
+      <thead><tr><th style="width:22%">Livello</th><th>Contenuto</th><th style="width:22%">Grado di certezza</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · Dati verificabili</strong></td><td>Bilancio d'esercizio, organico, risultati dell'assessment APEX 5D, dati HR di turnover e assenze.</td><td><span class="pill good"><span class="dot"></span>Fatto documentato</span></td></tr>
+        <tr><td><strong>2 · Potenziale economico stimato</strong></td><td>Valore lordo associato al divario, costo annuo del turnover, costo delle assenze a carico dell'azienda, costo delle posizioni vacanti. Formule contabili applicate ai dati.</td><td><span class="pill neutral"><span class="dot"></span>Calcolo su convenzioni dichiarate</span></td></tr>
+        <tr><td><strong>3 · Beneficio atteso</strong></td><td>Quota del potenziale che il programma porta a terra nel primo anno, secondo ipotesi esplicite, prudenziali e modificabili.</td><td><span class="pill warn"><span class="dot"></span>Ipotesi di scenario</span></td></tr>
+        <tr><td><strong>4 · Beneficio realizzato</strong></td><td>Misurato a dodici mesi sugli stessi indicatori, confrontato con la baseline fissata oggi nel piano di verifica.</td><td><span class="pill good"><span class="dot"></span>Misura a consuntivo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-h"><h2>Convenzioni contabili adottate</h2><span class="hint">con la verifica sul caso caricato</span></div>
+  <div class="tscroll wrapcell">
+    <table>
+      <thead><tr><th style="width:20%">Grandezza</th><th style="width:34%">Convenzione</th><th>Verifica sul caso caricato</th></tr></thead>
+      <tbody id="convTbl"></tbody>
+    </table>
+  </div>
+
+  <div class="sec-h"><h2>Le voci di bilancio che entrano nel calcolo</h2></div>
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Voce</th><th>Ruolo nel modello</th><th>Obbligatoria</th></tr></thead>
+      <tbody id="vociTbl"></tbody>
+    </table>
+  </div>
+
+  <div class="sec-h"><h2>Perché la base è l'HCVA e non il costo del personale</h2></div>
+  <div class="card pad">
+    <p style="color:var(--ink-2);font-size:13.3px">Il costo del personale misura quanto le persone <strong style="color:var(--ink)">costano</strong>, non quanto <strong style="color:var(--ink)">producono</strong>. Un divario di competenza non distrugge una quota della busta paga: riduce il valore che quelle persone generano. La grandezza adottata è quindi il valore che resta dopo aver remunerato tutti gli altri fattori produttivi, capitale fisso compreso.</p>
+    <div class="formula" style="margin-top:14px;white-space:pre-wrap">HCVA = Valore della produzione − (Totale costi della produzione − Costo del personale)
+     = EBIT + Costo del personale</div>
+    <p style="color:var(--ink-2);font-size:13.3px;margin-top:14px">È l'adattamento allo schema civilistico della grandezza che Fitz-enz pone al numeratore dei suoi indicatori di capitale umano: i ricavi diventano il valore della produzione, le spese operative diventano la classe B. Due precisazioni. L'HCVA <strong style="color:var(--ink)">non dipende dalla definizione di EBITDA</strong>, quindi la scelta della convenzione sul margine non tocca il risultato principale. E l'HCVA è una misura di valore prodotto, non di causalità: dice quanto vale il lavoro per l'azienda, non che le competenze ne siano la causa.</p>
+    <div class="note" style="margin-top:14px" id="hcroiNote"></div>
+  </div>
+
+  <div class="sec-h"><h2>Come viene applicato il divario</h2></div>
+  <div class="card pad">
+    <p style="color:var(--ink-2);font-size:13.3px">Il GAP è espresso in punti assoluti sulla stessa scala del valore competenze. Esistono tre modi di tradurlo in una variazione relativa del valore prodotto; il modello adotta il più prudente.</p>
+    <div class="tscroll" style="margin-top:12px;box-shadow:none">
+      <table>
+        <thead><tr><th>Convenzione</th><th>Rapporto</th><th>Valore sul caso</th><th>Uso</th></tr></thead>
+        <tbody id="gapConvTbl"></tbody>
+      </table>
+    </div>
+    <p style="color:var(--ink-2);font-size:13.3px;margin-top:12px">Se il fornitore dell'assessment esprimesse il GAP come percentuale relativa al valore atteso, il dato andrebbe inserito così com'è: il modello lo applica direttamente in entrambi i casi, e in entrambi la scelta resta la più cauta.</p>
+  </div>
+
+  <div class="sec-h"><h2>Sovrapposizioni fra le leve<button class="i" data-info="overlap" type="button" aria-expanded="false">i</button></h2><span class="hint">dipendenza causale e doppio conteggio non sono la stessa cosa</span></div>
+  <div class="card pad" style="margin-bottom:14px">
+    <p style="color:var(--ink-2);font-size:13.3px">Le leve sono <strong style="color:var(--ink)">causalmente correlate</strong>: una persona sotto soglia tende a produrre meno, ad assentarsi di più e a lasciare più facilmente l'azienda. Questo non è di per sé un doppio conteggio: lo stesso intervento può generare risparmi distinti, ciascuno su una voce di costo diversa. Il doppio conteggio si ha solo quando <strong style="color:var(--ink)">lo stesso euro</strong> compare in due leve. La matrice indica dove succede e come il modello lo neutralizza. Ciò che resta è un rischio di <strong style="color:var(--ink)">attribuzione</strong> — quanto del beneficio è dovuto al programma — che si risolve solo con la misura a consuntivo.</p>
+  </div>
+  <div class="tscroll mx">
+    <table>
+      <thead><tr><th style="width:16%">Coppia di leve</th><th style="width:12%">Sovrapposizione</th><th>Dove può comparire lo stesso euro</th><th style="width:34%">Come viene neutralizzata</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">Produttività · Turnover</td><td><span class="lvl bassa">Bassa</span></td><td>La leva 1 misura il valore prodotto da chi lavora; la leva 2 il costo di selezione, inserimento e apprendimento di chi sostituisce chi esce. Sono voci diverse.</td><td>Nessuna rettifica contabile necessaria. Il costo di sostituzione non include il margine perso durante la vacanza, che appartiene alla leva 4.</td></tr>
+        <tr><td class="lv">Produttività · Assenze</td><td><span class="lvl nulla">Nulla per costruzione</span></td><td>L'HCVA è già al netto delle ore non lavorate; la leva 3 valorizza solo le ore retribuite e non prestate.</td><td>Separazione garantita dalla definizione delle due basi.</td></tr>
+        <tr><td class="lv">Produttività · Vacanze</td><td><span class="lvl alta">Alta se basata sulla copertura</span></td><td>Una posizione presidiata da una persona sotto soglia risulta «non coperta» ed è già nel divario di competenza.</td><td>La leva 4 usa solo le posizioni vacanti, prive di titolare, inserite a mano. La copertura ruoli resta diagnostica.</td></tr>
+        <tr><td class="lv">Turnover · Vacanze</td><td><span class="lvl media">Media</span></td><td>Le uscite generano vacanze: lo stesso evento può produrre costo di sostituzione e margine perso.</td><td>Le posizioni vacanti indicate nella leva 4 devono escludere quelle generate dal turnover già valorizzato nella leva 2. La dashboard lo ricorda quando la leva 4 è attiva.</td></tr>
+        <tr><td class="lv">Turnover · Assenze</td><td><span class="lvl nulla">Nulla</span></td><td>Basi di costo diverse, eventi diversi.</td><td>Nessuna rettifica necessaria.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-h"><h2>Controlli automatici</h2><span class="hint">eseguiti a ogni modifica dei dati</span></div>
+  <div class="tscroll wrapcell">
+    <table>
+      <thead><tr><th style="width:24%">Controllo</th><th>Comportamento</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Dati essenziali</strong></td><td>Se mancano dipendenti, valore della produzione, costi della produzione, costo del personale o corrispettivo, i risultati non vengono mostrati: nessun ROI apparentemente valido su dati incompleti.</td></tr>
+        <tr><td><strong>Quadratura EBIT</strong></td><td>Confronta l'EBIT dichiarato con A − B. Il modello usa sempre il valore ricalcolato.</td></tr>
+        <tr><td><strong>Quadratura EBITDA</strong></td><td>Confronta l'EBITDA dichiarato con le due convenzioni e indica quale delle due segue il file. Il modello usa la convenzione selezionata.</td></tr>
+        <tr><td><strong>Valori nulli o negativi</strong></td><td>HCVA non positivo blocca il calcolo; EBITDA non positivo sospende gli indicatori sulla marginalità; beneficio inferiore all'investimento viene segnalato; tempo di rientro non calcolato se il beneficio è nullo.</td></tr>
+        <tr><td><strong>Intervalli</strong></td><td>Valore competenze, copertura, turnover, assenze e GAP devono stare in intervalli plausibili; la somma di competenze e GAP non può superare 100.</td></tr>
+        <tr><td><strong>Unità di misura</strong></td><td>Valore della produzione per dipendente sotto 10.000 € segnala importi probabilmente in migliaia; costo del personale superiore al valore della produzione o salari superiori al costo del personale segnalano voci invertite.</td></tr>
+        <tr><td><strong>Popolazione</strong></td><td>Se le persone valutate sono meno dell'organico, il potenziale di produttività viene applicato solo alla quota valutata.</td></tr>
+        <tr><td><strong>Costo delle azioni</strong></td><td>Se manca, la dashboard lo segnala e indica la spesa massima per azioni compatibile con il pareggio.</td></tr>
+        <tr><td><strong>Scenario</strong></td><td>Lo scenario attivo è sempre dichiarato; se un'ipotesi viene modificata a mano lo scenario diventa «personalizzato».</td></tr>
+        <tr><td><strong>Doppio conteggio</strong></td><td>La leva 4 non può poggiare sulla copertura ruoli; quando è attiva compare l'avviso sulle vacanze generate dal turnover.</td></tr>
+        <tr><td><strong>Calibrazione</strong></td><td>Ogni ipotesi resta segnalata come non calibrata finché non viene confermata con un dato dell'azienda.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-h"><h2>Errori metodologici da non commettere</h2></div>
+  <details open>
+    <summary>Moltiplicare il costo del personale per la percentuale di divario</summary>
+    <div class="dbody"><p>Confonde un costo con un valore prodotto e dà un risultato arbitrario, perché il rapporto fra costo del lavoro e valore generato cambia da settore a settore. Il selettore della base nella scheda «Motore di calcolo» mostra quanto cambia il risultato.</p></div>
+  </details>
+  <details>
+    <summary>Attribuire all'assessment l'intero beneficio</summary>
+    <div class="dbody"><p>L'assessment individua dove intervenire; il beneficio si realizza con le azioni successive — formazione, riassegnazioni, piani di sviluppo — e dipende dalla loro attuazione. Il loro costo va incluso nell'investimento del programma, altrimenti il ROI è sovrastimato. Se il costo non è ancora noto, la dashboard indica la spesa massima compatibile con il pareggio.</p></div>
+  </details>
+  <details>
+    <summary>Presentare il valore lordo del divario come perdita in corso</summary>
+    <div class="dbody"><p>È un potenziale, non una perdita contabilizzata. Nessun bilancio dimostra che l'azienda incasserebbe quella cifra se tutti raggiungessero il livello atteso. Solo la quota dichiarata recuperabile entra nel ROI.</p></div>
+  </details>
+  <details>
+    <summary>Presentare la stima di produttività come un beneficio dimostrato</summary>
+    <div class="dbody"><p>La relazione fra punteggio di competenza e valore prodotto è un'ipotesi finché non viene calibrata con dati aziendali. Per questo il beneficio è sempre mostrato su due livelli — benefici di costo verificabili e potenziale di produttività stimato — insieme al ROI che si otterrebbe con i soli benefici di costo.</p></div>
+  </details>
+  <details>
+    <summary>Mostrare un ROI a tre o quattro cifre senza contesto</summary>
+    <div class="dbody"><p>Un investimento piccolo in un'azienda grande produce per costruzione percentuali enormi, che un CFO legge come segnale di inattendibilità. Vanno sempre affiancati tempo di rientro, soglia di pareggio, quota del beneficio dovuta alla stima e ROI sui soli benefici di costo.</p></div>
+  </details>
+  <details>
+    <summary>Applicare il tasso di assenteismo all'intero costo del personale</summary>
+    <div class="dbody"><p>Il costo effettivamente sostenuto dipende da qualifica, settore e CCNL. Senza scorporare la parte indennizzata dall'INPS l'impatto può risultare sovrastimato; per gli impiegati dell'industria, al contrario, il costo è interamente a carico dell'azienda. Il parametro va preso dai cedolini.</p></div>
+  </details>
+
+  <div class="sec-h"><h2>Tracciabilità delle fonti</h2><span class="hint">che cosa dice ogni fonte, e che cosa non dice</span></div>
+  <div class="tscroll wrapcell">
+    <table>
+      <thead><tr><th style="width:17%">Affermazione o parametro</th><th style="width:22%">Fonte</th><th style="width:22%">Dato utilizzato</th><th style="width:22%">Limite</th><th>Uso nel modello</th></tr></thead>
+      <tbody id="srcTbl"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ VPNM ============ -->
+<section class="panel" id="p-vpnm" hidden>
+  <span class="eyebrow">Fuori dal ROI</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Valore percepibile non monetizzato</h2>
+  <p class="lead">Benefici reali, riconoscibili dalla direzione, che il modello deliberatamente non traduce in euro perché mancano le basi di misura. Tenerli fuori dal ROI è ciò che rende credibile il ROI.</p>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:10px">Decisioni</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li>Criteri oggettivi e documentati per promozioni e passaggi di ruolo, al posto della valutazione discrezionale.</li>
+        <li>Mappa dei ruoli critici e dei rispettivi sostituti interni: base di un piano di successione che oggi non esiste.</li>
+        <li>Individuazione della mobilità interna possibile prima di aprire una ricerca esterna.</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:10px">Conformità e reputazione</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li>Base documentale per la Direttiva UE 2023/970 sulla trasparenza retributiva: criteri di valutazione delle mansioni verificabili.</li>
+        <li>Evidenze oggettive a supporto delle decisioni sul personale in caso di contenzioso.</li>
+        <li>Elemento qualificante in gare, certificazioni e due diligence.</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:10px">Organizzazione</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li>Piano formativo costruito sui divari misurati invece che sulla richiesta spontanea: stessa spesa, destinazione diversa.</li>
+        <li>Riduzione del tempo che i responsabili dedicano a questioni di gestione del personale mal poste.</li>
+        <li>Linguaggio comune fra direzione, HR e responsabili di funzione sulle competenze richieste dai ruoli.</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <h3 style="font-size:13.5px;margin-bottom:10px">Ciò che il modello non promette</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li>Il beneficio non è attribuito all'assessment in sé: si realizza con le azioni di sviluppo che ne derivano, il cui costo fa parte dell'investimento del programma.</li>
+        <li>La stima di produttività non è un risultato dimostrato finché non viene calibrata e misurata a consuntivo.</li>
+        <li>Nessun effetto è attribuito a miglioramenti di clima o di soddisfazione: non misurabili con questo impianto.</li>
+        <li>Nessun beneficio commerciale o di qualità è monetizzato in assenza di dati su rilavorazioni e reclami.</li>
+        <li>Il ritorno è calcolato sul primo esercizio: gli effetti pluriennali non sono capitalizzati.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:18px">Questa separazione è la ragione per cui il business case regge una discussione con la direzione finanziaria: tutto ciò che è in euro ha una radice in bilancio, tutto il resto è dichiarato come non quantificato.</div>
+</section>
+
+<!-- ============ GLOSSARIO ============ -->
+<section class="panel" id="p-glossario" hidden>
+  <span class="eyebrow">Capitolato delle voci</span>
+  <h2 style="font-size:20px;margin:6px 0 8px">Glossario</h2>
+  <p class="lead">Ogni voce che compare nella dashboard, con il suo significato, la formula che la produce e la fonte del parametro. Lo stesso testo compare cliccando il pulsante <span class="i" style="cursor:default">i</span> accanto a ciascuna voce nelle altre schede.</p>
+  <div style="display:flex;gap:8px;margin:18px 0 6px;flex-wrap:wrap">
+    <button type="button" id="glOpen">Apri tutto</button>
+    <button type="button" id="glClose">Chiudi tutto</button>
+  </div>
+  <div id="glossBody" style="margin-top:12px"></div>
+</section>
+
+<footer>
+  <span id="footL">SKILL-VISION S.r.l. · P.IVA 01720630555 · Via Luigi Casale 7, Terni · APEX 5D™</span>
+  <span id="footR"></span>
+</footer>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "sv-roi-engine",
+  "version": "4.0.0",
+  "private": true,
+  "description": "SKILL-VISION Human Capital ROI Engine (APEX 5D) - business case calculator for human-capital programs",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs src",
+    "serve": "node scripts/serve.mjs dist",
+    "test": "npm run build && node --test \"tests/**/*.test.js\"",
+    "test:unit": "node --test \"tests/unit/*.test.js\"",
+    "test:integration": "npm run build && node --test \"tests/integration/*.test.js\""
+  },
+  "devDependencies": {
+    "esbuild": "0.24.2",
+    "jsdom": "25.0.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
