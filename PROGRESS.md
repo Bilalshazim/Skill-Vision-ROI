@@ -75,3 +75,15 @@ Senza Web Animations API (es. jsdom nei test) il cambio di scheda è istantaneo.
 Verifica in Chromium sotto `/Skill-Vision-ROI/`: 26 richieste locali tutte 200, stile, font, loghi e grafici caricati, nessun errore in console.
 
 `npm test`: 77 test, tutti verdi (nuovo `tests/integration/pages.test.js`).
+
+## 2026-11-04 · Pagina di accesso
+
+| Modifica | Dettaglio |
+|---|---|
+| Nuova pagina `login.html` (`src/js/login.js`, `src/js/ui/auth.js`) | utente unico; nel codice c'è solo l'hash SHA-256 della password; sessione in `sessionStorage`, valida finché resta aperta la scheda |
+| Controllo all'avvio in `src/js/main.js` | senza sessione la pagina va a `login.html`; pulsante «Esci» nell'header |
+| Senza accesso: `dist/`, file aperti dal disco, copie salvate | necessario perché le copie inviate per email si aprano; `dist/` è riconosciuto con `SV_STANDALONE` in `scripts/build.mjs` |
+
+Limite noto: il controllo avviene nel browser di un sito statico pubblico. È una barriera d'uso, non una protezione: i file in `src/` restano scaricabili e l'accesso è aggirabile. Per un accesso davvero riservato serve un hosting con controllo lato server.
+
+Verifica in Chromium sotto `/Skill-Vision-ROI/`: reindirizzamento senza sessione, password errata, accesso, «Esci». Copia con dati aperta senza sessione, senza login. `npm test`: 78 test, tutti verdi.

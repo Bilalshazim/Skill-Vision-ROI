@@ -401,3 +401,14 @@ button.ib.upd{background:var(--hero-bg);border-color:var(--hero-bg);color:var(--
   #kpiRow2{margin-bottom:10px!important}
   #cfoLine{margin:0 0 4px!important}
 }
+/* ============ ACCESSO ============ */
+.sv-checking body{visibility:hidden}
+button.ib[hidden],.login-error[hidden]{display:none}
+.login-page{min-height:100dvh;display:grid;place-items:center;padding:16px}
+.login-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:28px}
+.login-card .brand{margin:0 0 24px}
+.login-card h1{font-size:20px;font-weight:600;margin:0 0 18px}
+.login-card .field{margin-bottom:14px}
+.login-card input{font:inherit;font-size:16px;padding:9px 10px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink);width:100%}
+.login-card button{width:100%;padding:10px 12px}
+.login-error{background:var(--bad-soft);color:var(--bad);border-radius:var(--r-sm);padding:8px 10px;font-size:13px;margin:0 0 14px}

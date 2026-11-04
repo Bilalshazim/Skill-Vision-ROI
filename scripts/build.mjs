@@ -25,6 +25,7 @@ const bundle = await build({
   target: "es2018",
   charset: "utf8",
   legalComments: "none",
+  define: { "globalThis.SV_STANDALONE": "true" },
   write: false,
 });
 const js = bundle.outputFiles[0].text;

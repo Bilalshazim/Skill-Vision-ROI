@@ -6,9 +6,7 @@ import { initPopover, renderGlossary } from "./ui/popover.js";
 import { initControls } from "./ui/controls.js";
 import { initFileImport } from "./ui/fileImport.js";
 import { initSave } from "./ui/save.js";
-
-/* HTML intatto della pagina, prima di qualsiasi modifica: base per «Salva copia» */
-store.pristine = document.documentElement.outerHTML;
+import { authExempt, hasSession, signOut } from "./ui/auth.js";
 
 /* dati di partenza: quelli incorporati da «Salva copia», altrimenti il campione */
 function readEmbedded(){
@@ -18,14 +16,31 @@ function readEmbedded(){
   try{ const o=JSON.parse(txt); return (o && typeof o==="object")? o : null; }
   catch(e){ return null; }
 }
-const embedded=readEmbedded();
-store.embedded = !!embedded;
-store.initial = normalizeState(embedded || SAMPLE);
-store.S = normalizeState(store.initial);
 
-initPopover();
-initControls();
-initFileImport();
-initSave();
-render();
-renderGlossary();
+function start(){
+  /* HTML intatto della pagina, prima di qualsiasi modifica: base per «Salva copia» */
+  store.pristine = document.documentElement.outerHTML;
+  const embedded=readEmbedded();
+  store.embedded = !!embedded;
+  store.initial = normalizeState(embedded || SAMPLE);
+  store.S = normalizeState(store.initial);
+  initPopover();
+  initControls();
+  initFileImport();
+  initSave();
+  render();
+  renderGlossary();
+  document.documentElement.classList.remove('sv-checking');
+}
+
+function toLogin(){ location.replace("./login.html"); }
+
+function initLogout(){
+  const b=document.getElementById('logoutBtn');
+  b.hidden=false;
+  b.addEventListener('click',function(){ signOut(); toLogin(); });
+}
+
+if(authExempt()) start();
+else if(hasSession()){ start(); initLogout(); }
+else toLogin();

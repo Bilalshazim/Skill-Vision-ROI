@@ -112,12 +112,15 @@ test("every form field has a formatted static value for the PDF", () => {
 test("header actions are labelled icon buttons", () => {
   const { document } = loadFile(DIST);
   const btns = [...document.querySelectorAll(".hdr-actions button")];
-  assert.deepEqual(btns.map((b) => b.id), ["themeBtn", "clearBtn", "resetBtn", "glossBtn", "printBtn", "updBtnTop"]);
+  assert.deepEqual(btns.map((b) => b.id), ["themeBtn", "clearBtn", "resetBtn", "glossBtn", "printBtn", "updBtnTop", "logoutBtn"]);
   for (const b of btns) {
     assert.ok(b.classList.contains("ib"));
     assert.ok(b.getAttribute("aria-label"));
     assert.ok(b.querySelector("svg"));
   }
+  // the built file needs no login: it starts directly, with no logout button
+  assert.equal(document.getElementById("logoutBtn").hidden, true);
+  assert.ok(!document.documentElement.classList.contains("sv-checking"));
 });
 
 test("status bar shows client metadata and headline KPIs", () => {

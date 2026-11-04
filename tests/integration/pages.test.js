@@ -97,3 +97,8 @@ test("the built single file (dist/) has no external local references", () => {
   const dist = readFileSync(path.join(root, "dist/index.html"), "utf8");
   assert.deepEqual(localRefs(dist), []);
 });
+test("login.html loads only relative files that exist with exact letter case", () => {
+  const loginRefs = localRefs(readFileSync(path.join(root, "login.html"), "utf8"));
+  assert.deepEqual(loginRefs.filter((r) => r.startsWith("/")), []);
+  assert.deepEqual(loginRefs.map((r) => r.replace(/^\.\//, "")).filter((f) => !existsExactCase(f)), []);
+});

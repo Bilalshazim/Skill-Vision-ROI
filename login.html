@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Accedi · Human Capital ROI Engine</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body class="login-page">
+<main class="login-card">
+  <div class="brand">
+    <img class="logo l" alt="SKILL-VISION" src="./src/assets/logo-light.png">
+    <img class="logo d" alt="SKILL-VISION" src="./src/assets/logo-dark.png">
+  </div>
+  <h1>Accedi</h1>
+  <form id="loginForm">
+    <div class="field">
+      <label for="username">Nome utente</label>
+      <input id="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+    </div>
+    <p id="loginError" class="login-error" role="alert" hidden></p>
+    <button id="loginBtn" type="submit" class="primary">Accedi</button>
+  </form>
+</main>
+<script type="module" src="./src/js/login.js"></script>
+</body>
+</html>

@@ -47,7 +47,7 @@ Il modulo **Motore ROI del Capitale Umano** consente ai consulenti di Skill Visi
 
 ## 4. Header Iconset & Navigazione Tab Standard
 
-* **Azioni Header:** Tema, Azzera tutto, Dati campione, Glossario, Stampa / PDF, Aggiorna il dato.
+* **Azioni Header:** Tema, Azzera tutto, Dati campione, Glossario, Stampa / PDF, Aggiorna il dato, Esci (visibile solo sul sito, dopo l'accesso).
 * **Tabs di Navigazione:** Sintesi, Dati, Motore di calcolo, Scenari, Metodologia, Valore non monetizzato, Glossario.
 
 ---
